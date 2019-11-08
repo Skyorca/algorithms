@@ -1,58 +1,53 @@
-from collections import defaultdict
+"""
+考点：数组的前缀和加速计算
+"""
 
 t = int(input())
 for time in range(1, t+1):
-    N,Q = map(int, input().split())
-    counter = 0
-    string = input()
-    alphabet = defaultdict(int)
-    #do prefix efficient counting
-    """
-    say, s = "aabcbd"
-    psum=[{a:1},{a:2},{a:2, b:1},{a:2,b:1,c:1},...]
-    """
-    psum = list()
-    for c in string:
-        alphabet[c] += 1
-        psum.append(dict(alphabet)) #make sure to change defaultdict into dict 
-    print(psum)
-    for i in range(Q):
-        l_idx, r_idx = map(int, input().split())
-        odd_time = 0
-        stop = 0
-        for letter,freq in psum[r_idx-1].items():
-            if letter not in psum[l_idx-2].keys():
-                if freq%2==1:
-                    if odd_time: 
-                        stop += 1
-                        break #odd>=2 false
-                    else: odd_time += 1
-            elif (freq-psum[l_idx-2][letter])%2==1:
-                if odd_time: 
-                    stop += 1
-                    break #odd>=2 false
-                else: odd_time += 1
-        if not stop: counter += 1
+    N,P = map(int, input().split())
+    S = map(int, input().split()) #automaically recognize as an array?
+    S = sorted(S, reverse=True) #sort in decreasing order
 
-    print("Case #{}: {}".format(time, counter), flush = True)
+    # calculate prefix sum of an array
+    psum = []
+    psum.append(S[0])
+    for i in range(1, len(S)):
+        psum.append(psum[i-1]+S[i])
+    #print(psum)
+
+    min_time = float('inf')
+    for i in range(N-P+1):
+        total = P*S[i]
+        """
+        for j in range(i,i+P): #usual case, NOT USING PREFIX_SUM
+            total -= S[j]
+        """
+        total -= (psum[i+P-1]-psum[i])
+        total -= S[i]
+        if total<min_time: min_time=total
+    print("Case #{}: {}".format(time, min_time), flush = True)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 """
 test:
- 
-2
-7 5
-ABAACCA
-3 6
-4 4
-2 5
-6 7
-3 7
-3 5
-XYZ
-1 3
-1 3
-1 3
-1 3
-1 3
-"""        
-    
+3
+4 3
+3 1 9 100
+6 2
+5 5 1 2 3 4
+5 5
+7 7 1 7 7
+"""
