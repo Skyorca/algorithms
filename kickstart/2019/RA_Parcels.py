@@ -9,7 +9,7 @@ for time in range(1, t+1):
     R, C = map(int, input().split())
     grid = list()
     for _ in range(R):
-        r = str(input())
+        r = input() #input() read in-stream as string, so we only need to map to int when it's needed
         r = [int(x) for x in r]
         grid.append(r)
     #step1: loop through all grid and calculate the min dist
